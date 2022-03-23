@@ -1,1 +1,15 @@
-
+spring:
+  application:
+    name: message-server
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/micromesssage?createDatabaseIfNotExist=true
+      &allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true
+      &characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: Zabbil@3qew8Nbi1984
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate.ddl-auto: update
+    show-sql: true
+  flyway:
+    enabled: true

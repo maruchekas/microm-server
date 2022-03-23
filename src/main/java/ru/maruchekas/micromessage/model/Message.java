@@ -1,6 +1,7 @@
 package ru.maruchekas.micromessage.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "messages")
+@Accessors(chain = true)
 public class Message {
 
     @Id
