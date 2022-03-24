@@ -40,7 +40,7 @@ public class MessageController {
                                                            @PathVariable("to") String to) throws InvalidRequestDataException {
         ListMessageResponse listMessageResponse = messageService.getMessages(from, to);
         logger.info("Запрошен список сообщений в диапазоне дат {} {}. Сообщений по запросу отдано: {}",
-                from, to,listMessageResponse.getTotal());
-        return new ResponseEntity<>(messageService.getMessages(from, to), HttpStatus.OK);
+                from, to, 7);
+        return new ResponseEntity<>(listMessageResponse, HttpStatus.OK);
     }
 }
