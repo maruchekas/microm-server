@@ -1,0 +1,103 @@
+package ru.maruchekas.micromessage.controller;
+
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import ru.maruchekas.micromessage.AbstractTest;
+import ru.maruchekas.micromessage.api.request.CreateMessageRequest;
+import ru.maruchekas.micromessage.service.MessageService;
+
+import java.time.LocalDateTime;
+
+import static ru.maruchekas.micromessage.config.Constants.*;
+
+
+
+@SpringBootTest
+@AutoConfigureMockMvc
+@TestPropertySource(value = {"classpath:application-test.properties"})
+public class MessageControllerTest extends AbstractTest {
+
+    @Autowired
+    MessageService messageService;
+
+    @BeforeEach
+    public void setup() {
+        super.setup();
+    }
+
+    @AfterEach
+    public void cleanup() {
+    }
+
+
+    @Test
+    void sendMessageTest() throws Exception {
+        CreateMessageRequest createMessageRequest = new CreateMessageRequest()
+                .setText("test text");
+
+        String ctime = LocalDateTime.now().toString().substring(0,17);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/message")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(createMessageRequest)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(createMessageRequest.getText()))
+                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString(ctime)))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void getMessageListTest() throws Exception {
+
+        String fromTime = LocalDateTime.now().minusDays(1L).toString();
+        String toTime = LocalDateTime.now().toString();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/message/from/{from}/to/{to}", fromTime, toTime)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.total").exists())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void getMessageListBadTest() throws Exception {
+
+        String fromTime = LocalDateTime.now().minusDays(1L).toString();
+        String toTime = LocalDateTime.now().toString();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/message/from/{from}/to/{to}",
+                                fromTime.replace('T', ' '), toTime)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.total").doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(INVALID_DATEFORMAT))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+
+    @Test
+    void getMessageListBadRangeTest() throws Exception {
+
+        String fromTime = LocalDateTime.now().toString();
+        String toTime = LocalDateTime.now().minusDays(1L).toString();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/message/from/{from}/to/{to}", fromTime, toTime)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.total").doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").value(INCORRECT_PERIOD))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    }
+}
