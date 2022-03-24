@@ -1,5 +1,6 @@
 package ru.maruchekas.micromessage.api.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class MessageResponse {
 
     private Long id;
 
+    @JsonProperty("created_time")
     private LocalDateTime createdTime;
 
     private String text;

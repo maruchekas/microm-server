@@ -16,5 +16,5 @@ import java.util.List;
 public class ListMessageResponse {
 
     private Long total;
-    private List<MessageResponse> messageResponseList;
+    private List<MessageResponse> messageList;
 }

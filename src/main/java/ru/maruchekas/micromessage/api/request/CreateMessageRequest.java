@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-public class MessageRequest {
+public class CreateMessageRequest {
 
     private String text;
     private Long timestamp;
