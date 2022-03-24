@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.maruchekas.micromessage.api.request.CreateMessageRequest;
 import ru.maruchekas.micromessage.api.response.ListMessageResponse;
 import ru.maruchekas.micromessage.api.response.MessageResponse;
+import ru.maruchekas.micromessage.exception.InvalidRequestDataException;
 import ru.maruchekas.micromessage.service.MessageService;
 
 import java.time.LocalDateTime;
@@ -30,13 +31,13 @@ public class MessageController {
     }
 
     @GetMapping("/message/{id}")
-    public ResponseEntity<MessageResponse> getMessage(@PathVariable("id") Long id) {
+    public ResponseEntity<MessageResponse> getMessage(@PathVariable("id") Long id) throws InvalidRequestDataException {
         return new ResponseEntity<>(messageService.getMessage(id), HttpStatus.OK);
     }
 
     @GetMapping("/message/from/{from}/to/{to}")
     public ResponseEntity<ListMessageResponse> getMessages(@PathVariable("from") String from,
-                                                           @PathVariable("to") String to) {
+                                                           @PathVariable("to") String to) throws InvalidRequestDataException {
         ListMessageResponse listMessageResponse = messageService.getMessages(from, to);
         logger.info("Запрошен список сообщений в диапазоне дат {} {}. Сообщений по запросу отдано: {}",
                 from, to,listMessageResponse.getTotal());

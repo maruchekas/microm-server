@@ -5,13 +5,17 @@ import org.springframework.stereotype.Service;
 import ru.maruchekas.micromessage.api.request.CreateMessageRequest;
 import ru.maruchekas.micromessage.api.response.ListMessageResponse;
 import ru.maruchekas.micromessage.api.response.MessageResponse;
+import ru.maruchekas.micromessage.exception.InvalidRequestDataException;
 import ru.maruchekas.micromessage.model.Message;
 import ru.maruchekas.micromessage.repository.MessageRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+
+import static ru.maruchekas.micromessage.config.Constants.*;
+
 
 @Service
 @RequiredArgsConstructor
@@ -24,10 +28,21 @@ public class MessageService {
         return mapMessageToMessageResponse(message);
     }
 
-    public ListMessageResponse getMessages(String from, String to) {
+    public ListMessageResponse getMessages(String from, String to) throws InvalidRequestDataException {
 
-        LocalDateTime fromTime = LocalDateTime.parse(from);
-        LocalDateTime toTime = LocalDateTime.parse(to);
+        LocalDateTime fromTime;
+        LocalDateTime toTime;
+        try {
+        fromTime = LocalDateTime.parse(from);
+        toTime = LocalDateTime.parse(to);
+        } catch (RuntimeException e){
+            throw new InvalidRequestDataException(INVALID_DATEFORMAT);
+        }
+
+        if (fromTime.isAfter(toTime)){
+            throw new InvalidRequestDataException(INCORRECT_PERIOD);
+        }
+
         List<Message> messages = messageRepository.findByCreatedTime(fromTime, toTime);
         List<MessageResponse> messageResponseList = messages.stream().map(this::mapMessageToMessageResponse)
                 .collect(Collectors.toList());
@@ -36,8 +51,8 @@ public class MessageService {
                 .setTotal((long) messages.size());
     }
 
-    public MessageResponse getMessage(Long id) {
-        Message message = messageRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    public MessageResponse getMessage(Long id) throws InvalidRequestDataException {
+        Message message = messageRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return mapMessageToMessageResponse(message);
 
     }
