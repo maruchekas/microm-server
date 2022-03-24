@@ -2,14 +2,14 @@ spring:
   application:
     name: message-server
   datasource:
-    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/micromesssage?createDatabaseIfNotExist=true
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/${MICROM}?createDatabaseIfNotExist=true
       &allowPublicKeyRetrieval=true&useSSL=false&useUnicode=true
-      &characterEncoding=UTF-8&serverTimezone=UTC
-    username: root
-    password: Zabbil@3qew8Nbi1984
+      &characterEncoding=UTF-8
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    hibernate.ddl-auto: update
+    hibernate.ddl-auto: none
     show-sql: true
   flyway:
     enabled: true
