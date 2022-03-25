@@ -1,5 +1,7 @@
 package ru.maruchekas.micromessage.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import ru.maruchekas.micromessage.service.MessageService;
 import java.time.LocalDateTime;
 
 @RestController
+@Tag(name = "Контроллер сервера для работы с сообщениями")
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class MessageController {
@@ -22,6 +25,7 @@ public class MessageController {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final MessageService messageService;
 
+    @Operation(summary = "Отправка/сохранение сообщения")
     @PostMapping("/message")
     public ResponseEntity<MessageResponse> postMessage(@RequestBody CreateMessageRequest createMessageRequest) {
         logger.info("Получено сообщение: \"{}\", дата создания {}",
@@ -30,11 +34,13 @@ public class MessageController {
         return new ResponseEntity<>(messageService.postMessage(createMessageRequest), HttpStatus.OK);
     }
 
+    @Operation(summary = "Получение сообщения по айди")
     @GetMapping("/message/{id}")
     public ResponseEntity<MessageResponse> getMessage(@PathVariable("id") Long id) throws InvalidRequestDataException {
         return new ResponseEntity<>(messageService.getMessage(id), HttpStatus.OK);
     }
 
+    @Operation(summary = "Получение списка сообщений в диапазоне дат")
     @GetMapping("/message/from/{from}/to/{to}")
     public ResponseEntity<ListMessageResponse> getMessages(@PathVariable("from") String from,
                                                            @PathVariable("to") String to) throws InvalidRequestDataException {
