@@ -19,11 +19,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    ResponseEntity<BadResponse> handleException(NotSuchUserException notSuchUserException){
+    ResponseEntity<BadResponse> handleException(NoSuchElementException noSuchElementException){
 
         BadResponse badResponse = new BadResponse()
                 .setTitle("user")
-                .setMessage(notSuchUserException.getMessage());
+                .setMessage(noSuchElementException.getMessage());
         return new ResponseEntity<>(badResponse, HttpStatus.NOT_FOUND);
     }
 

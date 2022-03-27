@@ -13,7 +13,7 @@ import ru.maruchekas.micromessage.api.request.AuthRequest;
 import ru.maruchekas.micromessage.api.response.AuthResponse;
 import ru.maruchekas.micromessage.api.response.UserData;
 import ru.maruchekas.micromessage.exception.AccessDeniedException;
-import ru.maruchekas.micromessage.exception.NotSuchUserException;
+import ru.maruchekas.micromessage.exception.NoSuchElementException;
 import ru.maruchekas.micromessage.service.UserService;
 
 import java.security.Principal;
@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping("/login")
     @Operation(summary = "Вход через логин/пароль")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest authRequest)
-            throws NotSuchUserException, AccessDeniedException {
+            throws NoSuchElementException, AccessDeniedException {
 
         logger.info("Пользователь {} входит в приложение", authRequest.getEmail());
         return new ResponseEntity<>(userService.loginUser(authRequest), HttpStatus.OK);

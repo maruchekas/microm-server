@@ -2,11 +2,16 @@ package ru.maruchekas.micromessage.config.security;
 
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import ru.maruchekas.micromessage.exception.AccessDeniedException;
+import ru.maruchekas.micromessage.exception.JwtAuthenticationException;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+
+import static ru.maruchekas.micromessage.config.Constants.JWT_TOKEN_EXPIRED;
 
 @Component
 public class JwtGenerator {
@@ -27,7 +32,7 @@ public class JwtGenerator {
             Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException exception) {
-            return false;
+            throw new JwtAuthenticationException(JWT_TOKEN_EXPIRED, HttpStatus.FORBIDDEN);
         }
     }
 

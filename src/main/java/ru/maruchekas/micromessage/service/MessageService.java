@@ -6,10 +6,10 @@ import ru.maruchekas.micromessage.api.request.CreateMessageRequest;
 import ru.maruchekas.micromessage.api.response.ListMessageResponse;
 import ru.maruchekas.micromessage.api.response.MessageResponse;
 import ru.maruchekas.micromessage.exception.InvalidRequestDataException;
+import ru.maruchekas.micromessage.exception.NoSuchElementException;
 import ru.maruchekas.micromessage.model.Message;
 import ru.maruchekas.micromessage.repository.MessageRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,8 +51,9 @@ public class MessageService {
                 .setTotal((long) messages.size());
     }
 
-    public MessageResponse getMessage(Long id) throws InvalidRequestDataException {
-        Message message = messageRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+    public MessageResponse getMessage(Long id) throws NoSuchElementException {
+        Message message =
+                messageRepository.findById(id).orElseThrow(() -> new NoSuchElementException(MESSAGE_NOT_FOUND));
         return mapMessageToMessageResponse(message);
 
     }
