@@ -17,6 +17,7 @@
         <java.version>11</java.version>
         <springdoc.version>1.6.3</springdoc.version>
         <springfox.version>3.0.0</springfox.version>
+        <jjwt.version>0.9.1</jjwt.version>
 
     </properties>
     <dependencies>
@@ -43,6 +44,15 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>${jjwt.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

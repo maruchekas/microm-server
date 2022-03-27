@@ -4,16 +4,35 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import ru.maruchekas.micromessage.api.response.BadResponse;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    ResponseEntity<?> handleException(InvalidRequestDataException invalidRequestDataException){
+    ResponseEntity<BadResponse> handleException(InvalidRequestDataException invalidRequestDataException){
 
-        return new ResponseEntity<>(invalidRequestDataException.getMessage(), HttpStatus.BAD_REQUEST);
+        BadResponse badResponse = new BadResponse()
+                .setTitle("date_format")
+                .setMessage(invalidRequestDataException.getMessage());
+        return new ResponseEntity<>(badResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler
+    ResponseEntity<BadResponse> handleException(NotSuchUserException notSuchUserException){
 
+        BadResponse badResponse = new BadResponse()
+                .setTitle("user")
+                .setMessage(notSuchUserException.getMessage());
+        return new ResponseEntity<>(badResponse, HttpStatus.NOT_FOUND);
+    }
 
+    @ExceptionHandler
+    ResponseEntity<BadResponse> handleException(AccessDeniedException accessDeniedException){
+
+        BadResponse badResponse = new BadResponse()
+                .setTitle("permission")
+                .setMessage(accessDeniedException.getMessage());
+        return new ResponseEntity<>(badResponse, HttpStatus.FORBIDDEN);
+    }
 }
