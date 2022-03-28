@@ -72,8 +72,6 @@ public class MessageControllerTest extends AbstractTest {
         CreateMessageRequest createMessageRequest = new CreateMessageRequest()
                 .setText("test text");
 
-        String ctime = LocalDateTime.now().toString().substring(0, 17);
-
         mockMvc.perform(MockMvcRequestBuilders.post("/api/message")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(createMessageRequest)))
