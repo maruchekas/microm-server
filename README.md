@@ -13,6 +13,15 @@ DATABASE_PASSWORD=yuor_DB_password
 MICROM=name_of_DB
 Либо в properties.yml заменить значения указанных переменных
 ```
+
+```
+-Также, если необходимо предварительно запустить сервер имен Eureka:
+Перейти в корень проекта MicromEureka
+Выполнить mvn clean package --D maven
+Запустить сервер командой java -jar target/microm-eureka-1.0.jar
+Сервер Eureka стартанет на localhost:8761/
+```
+
 - Перейти в корень проекта
 - Создать исполняемый **jar** командой  **mvn clean package** (или **mvn clean package --D maven.test.skip **)
 - Запустить **jar** файл из командной строки: **java -jar target/micromessage-1.0.jar**
